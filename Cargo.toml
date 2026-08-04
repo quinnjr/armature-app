@@ -1,19 +1,19 @@
 [package]
 name = "armature-app"
-version.workspace = true
-edition.workspace = true
-rust-version.workspace = true
-authors.workspace = true
-license.workspace = true
+version = "0.3.0"
+edition = "2024"
+rust-version = "1.94.1"
+authors = ["Joseph Quinn <quinn.josephr@proton.me>"]
+license = "Apache-2.0"
 repository = "https://github.com/quinnjr/armature-app"
-homepage.workspace = true
+homepage = "https://quinnjr.github.io/armature"
 description = "Build complete Armature applications in Rhai scripts"
 keywords = ["rhai", "scripting", "web", "framework", "application"]
 categories = ["web-programming", "development-tools"]
 
 [dependencies]
-armature-core = { path = "../armature-core", version = "0" }
-armature-rhai = { path = "../armature-rhai", version = "0" }
+armature-core = { version = "0" }
+armature-rhai = { version = "0" }
 
 rhai = { version = "1.25", features = ["sync", "serde", "metadata"] }
 tokio = { version = "1.52", features = ["sync", "fs", "time", "rt-multi-thread", "macros", "signal"] }
