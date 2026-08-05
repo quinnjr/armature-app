@@ -25,6 +25,20 @@ Earlier changes are recorded in the workspace [`CHANGELOG.md`](../CHANGELOG.md).
 - **Breaking (scripts):** the after-middleware hook signature is `|req, res|`, receiving the full outgoing `Response` (status, headers, cookies, body) instead of only the status code. Return a `Response` to replace the outgoing one. This matches `armature_rhai::ScriptMiddleware::call_after` and the documented design.
 - `RequestBinding` is built once per request and shared across guards, middleware and the handler instead of being rebuilt (headers, query and a full body copy) at every hop.
 
+## [0.4.0] - 2026-08-05
+
+### Changed
+
+- **Requires `armature-core` 0.9 (breaking).** The requirement moved `0.8` →
+  `0.9`. `armature-core 0.9.0` itself moves `armature-h1` across a breaking
+  0.x boundary; because `armature-core` types appear in this crate's own
+  public API, the requirement change is breaking here too and the minor moves
+  with it. Under Cargo's 0.x caret rules the 0.8 and 0.9 types are distinct
+  and do not unify, so a consumer holding an `armature-core 0.8` type cannot
+  pass it to this crate. Part of the `armature-core 0.9.0` release train; see
+  `armature-core`'s CHANGELOG for the publish order.
+- Requires `armature-rhai` 0.4 (was `0.3`); it moved its minor in the same train for the same reason.
+
 ## [0.3.1] - 2026-08-04
 
 ### Fixed
