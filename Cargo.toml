@@ -15,8 +15,8 @@ categories = ["web-programming", "development-tools"]
 armature-core = { version = "0.9" }
 armature-rhai = { version = "0.4" }
 
-rhai = { version = "1.25", features = ["sync", "serde", "metadata"] }
-tokio = { version = "1.52", features = ["sync", "fs", "time", "rt-multi-thread", "macros", "signal"] }
+rhai = { version = "1.26", features = ["sync", "serde", "metadata"] }
+tokio = { version = "1.53", features = ["sync", "fs", "time", "rt-multi-thread", "macros", "signal"] }
 async-trait = "0.1"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
@@ -25,5 +25,5 @@ tracing = "0.1"
 
 [dev-dependencies]
 cargo-husky = { version = "1.5", default-features = false, features = ["user-hooks"] }
-tokio = { version = "1.52", features = ["rt-multi-thread", "macros", "sync", "time", "net", "io-util", "fs", "signal", "test-util"] }
+tokio = { version = "1.53", features = ["rt-multi-thread", "macros", "sync", "time", "net", "io-util", "fs", "signal", "test-util"] }
 tempfile = "3.27"
