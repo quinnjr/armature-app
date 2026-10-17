@@ -9,6 +9,8 @@ Earlier changes are recorded in the workspace [`CHANGELOG.md`](../CHANGELOG.md).
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-10-17
+
 ### Security
 
 - Handler and guard script errors are no longer echoed to clients: a failing handler returns a plain `500 Internal Server Error`, a failing guard a plain `403 Forbidden`; details are logged.
