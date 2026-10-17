@@ -194,9 +194,11 @@ fn make_handler(
                                     ));
                                 }
                                 Err(e) => {
+                                    // Log the script error; never echo it to the client.
                                     error!(guard = %guard.name, error = %e, "Guard error");
-                                    return Ok(HttpResponse::new(403)
-                                        .with_body(format!("Forbidden: {}", e).into_bytes()));
+                                    return Ok(
+                                        HttpResponse::new(403).with_body(b"Forbidden".to_vec())
+                                    );
                                 }
                             }
                         }
@@ -235,9 +237,10 @@ fn make_handler(
                     let response = match result {
                         Ok(val) => dynamic_to_response(val),
                         Err(e) => {
+                            // Script errors can carry source snippets and the
+                            // data the script was handling: log, don't echo.
                             error!(error = %e, "Handler error");
-                            HttpResponse::new(500)
-                                .with_body(format!("Internal Server Error: {}", e).into_bytes())
+                            HttpResponse::new(500).with_body(b"Internal Server Error".to_vec())
                         }
                     };
 

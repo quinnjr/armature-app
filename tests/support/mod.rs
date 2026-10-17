@@ -20,7 +20,7 @@ use armature_app::bindings::register_app_api;
 use armature_app::builder;
 use armature_app::types::ScriptApp;
 use armature_core::Router;
-use armature_rhai::register_armature_api;
+use armature_rhai::{harden_engine, register_armature_api};
 use rhai::{Engine, Scope};
 use std::sync::Arc;
 
@@ -29,6 +29,7 @@ use std::sync::Arc;
 /// bindings).
 pub fn new_engine() -> Engine {
     let mut engine = Engine::new();
+    harden_engine(&mut engine);
     register_armature_api(&mut engine);
     register_app_api(&mut engine);
     engine
