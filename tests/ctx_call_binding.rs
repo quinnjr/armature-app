@@ -123,9 +123,10 @@ async fn ctx_call_cannot_be_made_to_work_it_is_a_reserved_rhai_keyword() {
         "ctx.call(...) must NOT resolve — if this starts passing, Rhai's reserved-keyword \
          behavior has changed and the doc fix should be revisited"
     );
-    let body = String::from_utf8_lossy(response.body_ref());
-    assert!(
-        body.contains("expecting Fn") || body.contains("Fn"),
-        "expected Rhai's reserved fn-pointer-call error, got: {body}"
+    // The script error itself is logged server-side only; the client gets
+    // the generic body.
+    assert_eq!(
+        String::from_utf8_lossy(response.body_ref()),
+        "Internal Server Error"
     );
 }

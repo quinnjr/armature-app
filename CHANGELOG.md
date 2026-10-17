@@ -9,6 +9,16 @@ Earlier changes are recorded in the workspace [`CHANGELOG.md`](../CHANGELOG.md).
 
 ## [Unreleased]
 
+### Security
+
+- Handler and guard script errors are no longer echoed to clients: a failing handler returns a plain `500 Internal Server Error`, a failing guard a plain `403 Forbidden`; details are logged.
+- The application engine disables `eval`, and `import` is confined to the application script's directory (absolute paths, `..`, and symlinks leading outside are refused) via `armature_rhai::SandboxedModuleResolver`.
+
+### Changed
+
+- **Breaking:** scripts can no longer call `eval` or import files outside the application script's directory. Migration: move imported modules under the script directory.
+- Requires the `armature-rhai` release that adds `harden_engine` / `SandboxedModuleResolver`.
+
 ## [0.5.0] - 2026-09-15
 
 ### Changed
