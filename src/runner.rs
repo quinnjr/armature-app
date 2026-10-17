@@ -5,7 +5,7 @@ use crate::builder;
 use crate::error::{AppError, Result};
 use crate::types::ScriptApp;
 use armature_core::{Application, Container};
-use armature_rhai::register_armature_api;
+use armature_rhai::{SandboxedModuleResolver, harden_engine, register_armature_api};
 use rhai::{AST, Engine, Scope};
 use std::net::SocketAddr;
 use std::path::Path;
@@ -41,8 +41,12 @@ pub async fn run(script_path: &Path, config: RunConfig) -> Result<()> {
                 path: script_path.to_path_buf(),
             })?;
 
-    // Set module resolver to load imports relative to script directory
-    let resolver = rhai::module_resolvers::FileModuleResolver::new_with_path(script_dir);
+    // Imports resolve relative to the script directory and may not leave
+    // it (no absolute paths, `..`, or symlinks pointing outside).
+    let resolver =
+        SandboxedModuleResolver::new(script_dir).map_err(|_| AppError::ScriptNotFound {
+            path: script_path.to_path_buf(),
+        })?;
     engine.set_module_resolver(resolver);
 
     let ast = engine.compile(&source).map_err(|e| AppError::Compilation {
@@ -150,6 +154,10 @@ fn resolve_bind_addr(host: &str, port: u16) -> Result<SocketAddr> {
 /// Create a Rhai engine with all application-building and HTTP bindings.
 fn create_engine() -> Engine {
     let mut engine = Engine::new();
+
+    // No `eval`, and no imports until `run` installs a resolver confined to
+    // the application's script directory.
+    harden_engine(&mut engine);
 
     // Armature HTTP bindings (Request, Response, helpers)
     register_armature_api(&mut engine);
@@ -313,5 +321,19 @@ mod tests {
         // shutdown hooks run; the fix is that the failure is now logged
         // via `error!` instead of being discarded with `let _ = ...`.
         fire_shutdown_hook(&Some(hook), &engine, &ast);
+    }
+
+    #[test]
+    fn create_engine_disables_eval_and_imports() {
+        let engine = create_engine();
+        assert!(engine.compile(r#"eval("1 + 1")"#).is_err());
+
+        let temp = tempfile::TempDir::new().unwrap();
+        std::fs::write(temp.path().join("m.rhai"), "export const X = 1;").unwrap();
+        let script = format!(
+            "import {:?} as m; m::X",
+            temp.path().join("m").to_str().unwrap()
+        );
+        assert!(engine.eval::<i64>(&script).is_err());
     }
 }
