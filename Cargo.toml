@@ -12,7 +12,7 @@ keywords = ["rhai", "scripting", "web", "framework", "application"]
 categories = ["web-programming", "development-tools"]
 
 [dependencies]
-armature-core = { version = "0.12" }
+armature-core = { version = "0.13" }
 armature-rhai = { version = "0.7" }
 
 rhai = { version = "1.26", features = ["sync", "serde", "metadata"] }
